@@ -77,12 +77,12 @@ object PrlClosestPair {
     // left part
     var leftTempList = leftOfCenter.map(x => x)
     leftTempList = sortByY(leftTempList)
-    var closestPair = parallelDivideAndConquer(leftOfCenter, leftTempList)
+    var closestPair = divideAndConquer(leftOfCenter, leftTempList)
 
     // right part
     var rightTempList = rightOfCenter.map(x => x)
     rightTempList = sortByY(rightTempList)
-    val closestPairRight = parallelDivideAndConquer(rightOfCenter, rightTempList)
+    val closestPairRight = divideAndConquer(rightOfCenter, rightTempList)
 
     // compare
     if (closestPairRight.distance < closestPair.distance)
