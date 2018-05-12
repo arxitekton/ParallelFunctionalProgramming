@@ -151,22 +151,20 @@ object PrlClosestPair {
       val point1 = tempList(i)
       for (j <- i + 1 until tempList.size) {
         val point2 = tempList(j)
-        if ((point2.y - point1.y) >= shortestDistance)
-          return closestPair
+
         val distance = point1 distance point2
-        if (distance < closestPair.distance)
-        {
+        if (distance < closestPair.distance) {
           bestResult = Pair(point1, point2)
           shortest = distance
         }
       }
     }
 
-    closestPair
+    bestResult
   }
 
   def main(args: Array[String]) {
-    val numPoints = 10240
+    val numPoints = 1024
 
     val points = ListBuffer[Point]()
     val r = new Random()
@@ -176,18 +174,20 @@ object PrlClosestPair {
     println("Generated " + numPoints + " random points")
 
 
+    val closestPair = bruteForce(points.toList)
+    println("\nBruteForce: " + closestPair)
 
     val dqClosestPair = divideAndConquer(points.toList)
-    println("\nDivide and conquer: " + dqClosestPair)
+    println("Divide and conquer: " + dqClosestPair)
 
     val pdqClosestPair = parallelDivideAndConquer(points.toList)
     println("Parallel divide and conquer: " + pdqClosestPair)
 
 
-    if (dqClosestPair.distance != pdqClosestPair.distance)
-      println("\nMISMATCH")
-    else
+    if (closestPair.distance == dqClosestPair.distance && dqClosestPair.distance == pdqClosestPair.distance)
       println("\nMATCH")
+    else
+      println("\nSOMETHING WRONG")
 
 
 
@@ -197,6 +197,10 @@ object PrlClosestPair {
       Key.exec.benchRuns -> 50,
       Key.verbose -> false) withWarmer (new Warmer.Default)
 
+    val bruteForceTime = standardConfig measure {
+      bruteForce(points.toList)
+    }
+
     val sequentialDivideAndConquerTime = standardConfig measure {
       divideAndConquer(points.toList)
     }
@@ -205,7 +209,8 @@ object PrlClosestPair {
       parallelDivideAndConquer(points.toList)
     }
 
-    println(s"\nsequentialDivideAndConquerTime: $sequentialDivideAndConquerTime")
+    println(s"\nbruteForceTime: $bruteForceTime")
+    println(s"sequentialDivideAndConquerTime: $sequentialDivideAndConquerTime")
     println(s"parallelDivideAndConquerTime: $parallelDivideAndConquerTime")
 
   }
